@@ -3,6 +3,7 @@
 pkgname=shlib
 pkgver=1.3
 pkgrel=1
+pkgdesc='Collection of posix shell functions'
 arch=('any')
 depends=(bash colordiff)
 license=('Apache')
