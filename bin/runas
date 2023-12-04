@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+
+# change creds without pam session
+user="$1"
+shift
+IFS=:
+read -r logname pass uid gid comment home shell <<EOF
+  $(getent passwd "$user")
+EOF
+HOME="$home" USER="$user" SHELL="$shell" LOGNAME="$user" exec setpriv --regid "$user" --reuid "$user" --init-groups "$@"

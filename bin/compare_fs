@@ -1,0 +1,27 @@
+#!/bin/bash
+set -eu
+
+. /usr/lib/shlib/logs2.sh
+. /usr/lib/shlib/package.sh
+
+tarf=$1
+tmpd=$(mktemp -d --tmpdir)
+trap 'rm -r "$tmpd"' 0
+
+unz "$tarf" "$tmpd"
+
+exec 3<&0
+cd "$tmpd"
+find -type f | while read -r file; do
+  fsfile=/$file
+  if ! [ -f "$fsfile" ]; then
+    log notice "new file: $file"
+    continue
+  fi
+
+  cmp "$file" "$fsfile" >/dev/null && continue
+
+  read -p"diff $file? [Y/n]" ans <&3
+  [ "$ans" != n ] || continue
+  vimdiff "$file" "$fsfile" <&3 2>/dev/null
+done

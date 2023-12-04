@@ -1,0 +1,21 @@
+#!/bin/bash
+set -eu
+
+. /usr/lib/shlib/package.sh
+
+# Compare a build against a different version.
+
+file1=$1
+file2=$2
+
+tmp=$(mktemp -d --tmpdir)
+mkdir "$tmp"/1
+mkdir "$tmp"/2
+unz "$file1" "$tmp/1"
+unz "$file2" "$tmp/2"
+#tar -xaf "$file1" -C "$tmp/1"
+#tar -xaf "$file2" -C "$tmp/2"
+# --no-derefencence to not compare the targets of symlinks again
+diff -ur --no-dereference --new-file "$tmp/1" "$tmp/2" | colordiff || true
+
+rm -fr "$tmp"
