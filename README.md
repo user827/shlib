@@ -4,6 +4,5 @@ A library of commonly needed shell functions.
 
 ```
 cp PKGBUILD.template PKGBUILD
-makepkg
-pacman -U shlib.*.tar.*
+makepkg --install --syncdeps
 ```
