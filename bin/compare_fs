@@ -10,6 +10,11 @@ trap 'rm -r "$tmpd"' 0
 
 unz "$tarf" "$tmpd"
 
+diffprg=vimdiff
+if command -v nvim 2>/dev/null >&2; then
+  diffprg="nvim -d"
+fi
+
 exec 3<&0
 cd "$tmpd"
 find -type f | while read -r file; do
@@ -23,5 +28,5 @@ find -type f | while read -r file; do
 
   read -p"diff $file? [Y/n]" ans <&3
   [ "$ans" != n ] || continue
-  vimdiff "$file" "$fsfile" <&3 2>/dev/null
+  $diffprg "$file" "$fsfile" <&3 2>/dev/null
 done
